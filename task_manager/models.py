@@ -37,8 +37,18 @@ class Project(models.Model):
 
 
 class Worker(AbstractUser):
-    position = models.ForeignKey(Position, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='workers')
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='members'
+    )
 
 
 class Task(models.Model):
@@ -62,4 +72,9 @@ class Task(models.Model):
     )
     assignees = models.ManyToManyField(Worker, related_name='assignees')
     tags = models.ManyToManyField(Tag, related_name='tasks', blank=True)
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, related_name='tasks')
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='tasks'
+    )
