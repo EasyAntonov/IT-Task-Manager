@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task_manager.models import Task, Worker, Position, Project, TaskType
+from task_manager.models import Task, Worker, Position, Project, TaskType, Team
 
 
 @login_required
@@ -242,3 +242,17 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("task_manager:task-list")
     template_name = "task_manager/project_form.html"
 
+
+class TeamCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Team
+    form_class = TeamForm
+    success_url = reverse_lazy("task_manager:index")
+    template_name = "task_manager/team_form.html"
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        members = form.cleaned_data["members"]
+        for member in members:
+            member.team = self.object
+            member.save()
+        return response
