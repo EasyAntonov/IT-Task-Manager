@@ -95,3 +95,12 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
         context["related_workers"] = task.assignees.all()
         return context
 
+
+class CompletedTaskListView(LoginRequiredMixin, generic.ListView):
+    model = Task
+    template_name = "task_manager/completed_task_list.html"
+    context_object_name = "completed_tasks"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Task.objects.filter(completed=True).order_by("-id")
