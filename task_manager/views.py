@@ -104,3 +104,73 @@ class CompletedTaskListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Task.objects.filter(completed=True).order_by("-id")
+
+
+class WorkerListView(LoginRequiredMixin, generic.ListView):
+    model = Worker
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkerListView, self).get_context_data(**kwargs)
+        username = self.request.GET.get("username", "")
+        context["search_form"] = WorkerSearchForm(
+            initial={"username": username}
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = Worker.objects.all().order_by("username")
+        form = WorkerSearchForm(self.request.GET)
+        if form.is_valid():
+            return queryset.filter(
+                username__icontains=form.cleaned_data["username"]
+            )
+        return queryset
+
+
+class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Worker
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        worker = self.get_object()
+
+        context["assigned_tasks"] = worker.tasks.filter(is_completed=False)
+        context["completed_tasks"] = worker.tasks.filter(is_completed=True)
+
+        context["team"] = worker.team
+        if worker.team:
+            context["team_members"] = worker.team.members.all()
+            context["projects"] = worker.team.projects.all()
+        else:
+            context["team_members"] = []
+            context["projects"] = Project.objects.none()
+
+        return context
+
+
+class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Worker
+    form_class = WorkerCreationForm
+    success_url = reverse_lazy("task_manager:worker-list")
+
+
+class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Worker
+    template_name = "task_manager/worker_form.html"
+    fields = [
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "position",
+        "team",
+    ]
+    success_url = reverse_lazy("task_manager:worker-list")
+
+
+class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Worker
+    template_name = "task_manager/worker_confirm_delete.html"
+    context_object_name = "positions"
+
