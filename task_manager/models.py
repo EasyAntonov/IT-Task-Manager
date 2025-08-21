@@ -78,3 +78,12 @@ class Task(models.Model):
         null=True,
         related_name='tasks'
     )
+
+    def formatted_deadline(self):
+        return self.deadline.strftime("%d-%m-%Y")
+
+    def __str__(self):
+        return (f"{self.name} "
+                f"({self.priority}, due {self.deadline}) - "
+                f"{'Completed' if self.is_completed else 'In Progress'}"
+                )
