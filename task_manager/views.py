@@ -222,3 +222,15 @@ class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     fields = "__all__"
     success_url = reverse_lazy("task_manager:task-type-list")
     template_name = "task_manager/task_type_form.html"
+
+
+class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = TaskType
+    template_name = "task_manager/task_type_confirm_delete.html"
+    success_url = reverse_lazy("task_manager:task-type-list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task_type = self.get_object()
+        context["related_tasks"] = Task.objects.filter(task_type=task_type)
+        return context
