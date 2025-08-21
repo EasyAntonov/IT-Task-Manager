@@ -172,5 +172,40 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Worker
     template_name = "task_manager/worker_confirm_delete.html"
+    success_url = reverse_lazy("worker-list")
+
+
+class PositionListView(LoginRequiredMixin, generic.ListView):
+    model = Position
+    template_name = "task_manager/position_list.html"
     context_object_name = "positions"
 
+
+class PositionDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Position
+    template_name = "task_manager/position_detail.html"
+    context_object_name = "position"
+
+
+class PositionCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Position
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:position-list")
+
+
+class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Position
+    template_name = "task_manager/position form.html"
+    fields = ["name"]
+
+
+class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Position
+    template_name = "task_manager/position_confirm_delete.html"
+    success_url = reverse_lazy("task_manager:position-list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        position = self.get_object()
+        context["related_position"] = Worker.objects.filter(position=position)
+        return context
