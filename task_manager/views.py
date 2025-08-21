@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task_manager.models import Task, Worker, Position, Project
+from task_manager.models import Task, Worker, Position, Project, TaskType
 
 
 @login_required
@@ -209,3 +209,9 @@ class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
         position = self.get_object()
         context["related_position"] = Worker.objects.filter(position=position)
         return context
+
+
+class TaskTypeListView(LoginRequiredMixin, generic.ListView):
+    model = TaskType
+    template_name = "task_manager/task_type_list"
+    context_object_name = "task_type"
