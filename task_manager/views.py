@@ -214,7 +214,7 @@ class PositionCreateView(LoginRequiredMixin, generic.CreateView):
 
 class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Position
-    template_name = "task_manager/position form.html"
+    template_name = "task_manager/position_form.html"
     fields = ["name"]
 
 
@@ -232,7 +232,7 @@ class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class TaskTypeListView(LoginRequiredMixin, generic.ListView):
     model = TaskType
-    template_name = "task_manager/task_type_list"
+    template_name = "task_manager/task_type_list.html"
     context_object_name = "task_type"
 
 
