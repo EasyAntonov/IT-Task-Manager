@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -30,6 +32,23 @@ def index(request):
     }
 
     return render(request, "task_manager/index.html", context=context)
+
+
+class UserTaskListView(LoginRequiredMixin, generic.ListView):
+    model = Task
+    template_name = "task_manager/user_tasks.html"
+    context_object_name = "user_task_list"
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user).order_by("-id")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        warning_deadline = datetime.now().date() + datetime.timedelta(days=2)
+
+        context["warning_deadline"] = warning_deadline
+        return context
 
 
 def calculate_completed_percentage(completed_percentage):
