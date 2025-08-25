@@ -107,7 +107,7 @@ class TaskSearchForm(forms.Form):
     )
 
 
-class WorkerCreateForm(UserCreationForm):
+class WorkerCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Worker
         fields = UserCreationForm.Meta.fields + (
@@ -116,3 +116,17 @@ class WorkerCreateForm(UserCreationForm):
             "position",
             "team"
         )
+
+
+class WorkerSearchForm(forms.Form):
+    name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by username",
+            }
+        )
+    )
+
