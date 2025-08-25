@@ -10,6 +10,19 @@ class WorkerAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         (("Additional info", {"fields": ("position", "team",)}),)
     )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (
+            (
+                "Additional info",
+                {
+                    "fields": (
+                       "position",
+                        "team",
+                    )
+                },
+            ),
+        )
+    )
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
