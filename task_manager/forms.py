@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-from task_manager.models import Tag, Task
+from task_manager.models import Tag, Task, Worker, Team
 
 
 class LoginForm(forms.Form):
@@ -77,3 +77,22 @@ class TaskForm(forms.ModelForm):
             "tags",
             "project",
         ]
+
+
+class TeamForm(forms.ModelForm):
+    members = forms.ModelMultipleChoiceField(
+        queryset=Worker.objects.filter(team__isnull=True),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+
+    class Meta:
+        model = Team
+        fields = [
+            "name",
+            "members",
+        ]
+
+
+class TaskSearchForm(forms.Form):
+    pass
