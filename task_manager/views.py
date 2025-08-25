@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
 
+from task_manager.forms import TaskSearchForm, TaskForm, WorkerCreationForm, WorkerSearchForm, TeamForm
 from task_manager.models import Task, Worker, Position, Project, TaskType, Team
 
 
